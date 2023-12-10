@@ -1,0 +1,23 @@
+import RPi.GPIO as GPIO
+import time
+
+# Configuration des numéros de broche en mode BOARD
+GPIO.setmode(GPIO.BOARD)
+
+# Numéro de la broche que vous souhaitez activer en mode BOARD (11 correspond à GPIO 17 en mode BCM)
+pin_num = 11
+
+# Configuration de la broche en mode de sortie
+GPIO.setup(pin_num, GPIO.OUT)
+
+# Activation de la broche (mise en mode haute)
+GPIO.output(pin_num, GPIO.HIGH)
+
+# Attente pendant 5 secondes (vous pouvez ajuster la durée selon vos besoins)
+time.sleep(5)
+
+# Désactivation de la broche (mise en mode basse)
+GPIO.output(pin_num, GPIO.LOW)
+
+# Nettoyage des ressources GPIO
+GPIO.cleanup()
