@@ -1,23 +1,21 @@
 # Configuration du robot
 
-pin:
+motor_pin:
  motor_right_1: 16
  motor_right_2: 18
  motor_left_3: 13
  motor_left_4: 15
 
 screen:
- largeur: 1920
- hauteur: 1080
+ width: 1920
+ height: 1080
  fullscreen: True
  color_background_r: 0
  color_background_g: 0
  color_background_b: 0
  title_caption: 'Vikki'
-
-eye:
- equart_eye: 700
- vitesse_eye: 10
+ eye_padding: 700
+ eye_speed: 10
  eye_color_r: 40
  eye_color_g: 16
  eye_color_b: 180
