@@ -2,24 +2,61 @@ import time
 import socket
 import subprocess
 import re
+import openai
+
+import logging
 
 
 class Robot:
-    def __init__(self,screen,camera):
+    def __init__(self,screen,camera,microphone,speaker,medical_sensor):
         self.screen=screen
         self.camera=camera
+        self.microphone=microphone
+        self.speaker=speaker
+        self.medical_sensor=medical_sensor
+        
+        self.client = openai.OpenAI(api_key="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")
+        self.messages=[{"role": "system", "content": "tu es un robot appel Vikki, tu es une assistante medicale. Donnes des reponses courtes et empathique. Tu peux etre philosophique"},]
+        self.time_rest=0
+        self.timer_for_rest=60*15
         
     def run_robot(self):
         self.screen.thread_screen_start()
         time.sleep(3)
         self.connect_wifi()
-        self.screen.set_active_window('screen_eye_watching')
         self.camera.thread_camera_start()
+        self.screen.set_active_window('screen_eye_watching')
         
-        timer=time.time()+20
+        
+        '''
+        self.speaker.thread_speaker_start()
+        '''
+        self.microphone.thread_microphone_start()
+    
+        
+        self.medical_sensor.thread_medical_sensor_start()
+        
+        timer=time.time()+40
         while timer>time.time():
             self.screen.set_iris_eye_pos(self.camera.get_face_detected())
+            #print(self.medical_sensor.get_bpm_spo2())
+            time.sleep(1)
+            
+            microphone_text_spoke=self.microphone.get_speech_string()
+            logging.info(microphone_text_spoke)
+            '''
+            if microphone_text_spoke != '':
+                response_for_speaker=self.vocal_command(microphone_text_spoke)
+                if response_for_speaker!="":
+                    #######
+            '''
         
+        '''
+        self.speaker.thread_speaker_stop()
+        '''
+        self.microphone.thread_vocal_command_stop()
+        
+        self.medical_sensor.thread_medical_sensor_stop()
         self.camera.thread_camera_stop()
         self.screen.thread_screen_stop()
     
@@ -70,9 +107,36 @@ class Robot:
             connect_result = subprocess.run(f"nmcli device wifi connect {ssid} password {password}", shell=True, capture_output=True, text=True)
             if connect_result.returncode == 0:
                 return True
-            else:
-                return False
+            return False
 
         except:
             return False
+        
+    def vocal_command(self,vc_speech_string):
+        if time.time()>self.time_rest:
+            self.messages=[{"role": "system", "content": "tu es un robot qui porte le nom : Vikki. Tu es une assistante medicale. Donnes des reponses courtes et empathique. Tu peux etre philosophique"},]
+        if 'ok Vicky' in vc_speech_string:
+            self.time_rest=time.time()+self.timer_for_rest 
+            match vc_speech_string:
+                case "ok Vicky éteins-toi":
+                    response_text="C'est d'accord, je m'éteins. Au revoir."
+                case "ok Vicky déplace-toi":
+                    response_text="Bien, je me déplace."
+                case "ok Vicky arrête-toi":
+                    response_text="D'accord. J'arrête de me déplacer"
+                case "ok Vicky lance une analyse":
+                    response_text="Bien, je lance une analyse des constante vital"
+                case _:
+                    self.messages.append({"role":"user","content":speech_string_protected[8:]})
+                    response_text=self.send_to_chatgpt_request()
+                
+            return(response_text)
+        return("")
+    
+    def send_to_chatgpt_request(self):
+        completion = self.client.chat.completions.create(model="gpt-3.5-turbo",messages=self.messages)
+        response=completion.choices[0].message.content
+        self.messages.append({"role":"assistant","content":response})
+        return response
+                
         
