@@ -23,6 +23,10 @@ class Medical_Sensor:
         self.active_medical_sensor=False
         self.thread_medical_sensor.join()
     
+    def reset_bpm_spo2(self):
+        self.list_spo2=[]
+        self.list_bpm=[]
+    
     def get_bpm_spo2(self):
         return({'bpm':self.list_bpm,'spo2':self.list_spo2})
     

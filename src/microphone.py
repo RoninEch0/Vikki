@@ -13,8 +13,7 @@ class Microphone:
         self.recognizer=sr.Recognizer()
         self.thread_microphone=threading.Thread(target=self.microphone_run)
         self.active_microphone = False
-        self.speech_string=''
-        self.is_speech=False
+        self.speech_queue=[]
        
     def thread_microphone_start(self):
         self.active_microphone=True
@@ -24,28 +23,24 @@ class Microphone:
         self.active_microphone=False
         self.thread_microphone.join()
     
-    def get_speech_string(self)->str:
-        value = self.speech_string
-        self.is_speech=True
+    def get_speech_queue(self):
+        value = self.speech_queue
+        self.speech_queue=[]
         return value
     
-    def set_speech_string(self,value):
-        self.speech_string=value
-    
-    
+    def reset_speech_queue(self):
+        self.speech_queue=[]
+
     def microphone_run(self):
         while self.active_microphone:
-            self.is_speech=False
+            speech_string=""
             with sr.Microphone() as source:
                 try:
-                    self.speech_string = self.recognizer.recognize_google(self.recognizer.listen(source), language='fr-FR')
+                    speech_string = self.recognizer.recognize_google(self.recognizer.listen(source), language='fr-FR')
                 except:
                     pass
-            print(self.speech_string)
-            
-            """while not self.is_speech:
-                time.sleep(1)
-            self.speech_string=''
-            """
+                if 'ok Vicky' in speech_string[:8]:
+                    self.speech_queue.append(speech_string[8:])
+                    
             
                 

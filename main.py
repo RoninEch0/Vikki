@@ -11,6 +11,7 @@ import microphone
 import robot
 import speaker
 import medical_sensor
+import lidar
 
 def extract_config()-> map:
     config_yaml="/home/raspberry/Desktop/Projet_Vikki/config/config.yaml"
@@ -25,7 +26,8 @@ def main() -> None :
     microphone_vikki=microphone.Microphone()
     speaker_vikki=speaker.Speaker()
     medical_sensor_vikki=medical_sensor.Medical_Sensor()
-    vikki=robot.Robot(screen_vikki,camera_vikki,microphone_vikki,speaker_vikki,medical_sensor_vikki)
+    lidar_vikki=lidar.Lidar()
+    vikki=robot.Robot(screen_vikki,camera_vikki,microphone_vikki,speaker_vikki,medical_sensor_vikki,lidar_vikki)
     vikki.run_robot()
     
 if __name__ == "__main__":
