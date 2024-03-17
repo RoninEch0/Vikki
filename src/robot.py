@@ -15,7 +15,7 @@ class Robot:
         self.speaker=speaker
         self.medical_sensor=medical_sensor
         
-        self.client = openai.OpenAI(api_key="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")
+        self.client = openai.OpenAI(api_key="api_key")
         self.messages=[{"role": "system", "content": "tu es un robot appel Vikki, tu es une assistante medicale. Donnes des reponses courtes et empathique. Tu peux etre philosophique"},]
         self.time_rest=0
         self.timer_for_rest=60*15
