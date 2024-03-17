@@ -16,7 +16,7 @@ class Robot:
         self.medical_sensor=medical_sensor
         self.lidar=lidar
         
-        self.client = openai.OpenAI(api_key="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")
+        self.client = openai.OpenAI(api_key="api_key")
         self.messages=[{"role": "system", "content": "tu es un robot appel Vikki, tu es une assistante medicale. Donnes des reponses courtes et empathique. Tu peux etre philosophique"},]
         self.time_rest=0
         self.timer_for_rest=60*15
